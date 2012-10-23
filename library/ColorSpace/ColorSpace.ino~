@@ -1,0 +1,229 @@
+#include "Arduino.h"
+
+class ColorSpace
+{
+	public:
+		Morse();
+		struct HSL RGBtoHSL(struct RGB rgb);
+		struct RGB HSLtoRGB(struct HSL hsl);
+	private:
+		void _hslTempConversion(unsigned int& c, const double& temp1, const double& temp2, const double& temp3)
+
+};
+
+
+
+struct RGB {
+  byte r;
+  byte g;
+  byte b;
+};
+
+struct HSL {
+  byte h;
+  byte s;
+  byte l;
+};
+
+typedef unsigned int uint;
+
+void setup()
+{
+  //Serial.begin(9600);
+  
+  struct RGB rgb;
+  
+  rgb.r = 4;
+  rgb.g = 34;
+  rgb.b = 98;
+  
+  struct HSL hsl = RGBtoHSL(rgb);
+  
+  /*Serial.println("RGB");
+  Serial.println(rgb.r);
+  Serial.println(rgb.g);
+  Serial.println(rgb.b);
+
+  Serial.println("HSL");  
+  Serial.println(hsl.h);
+  Serial.println(hsl.s);
+  Serial.println(hsl.l);*/
+  
+  rgb = HSLtoRGB(hsl);
+  
+ /* Serial.println("RGB");
+  Serial.println(rgb.r);
+  Serial.println(rgb.g);
+  Serial.println(rgb.b);
+  */
+  
+  
+}
+
+void loop()
+{
+  
+  
+}
+
+struct HSL RGBtoHSL(struct RGB rgb)
+{
+  //struct HSL hsl = {rgb.r + 30, rgb.g + 90, rgb.b - 8};
+  
+  double r_percent = ((double)rgb.r)/255;
+  double g_percent = ((double)rgb.g)/255;
+  double b_percent = ((double)rgb.b)/255;
+  
+  double max_color = 0;
+  if((r_percent >= g_percent) && (r_percent >= b_percent))
+    max_color = r_percent;
+  if((g_percent >= r_percent) && (g_percent >= b_percent))
+    max_color = g_percent;
+  if((b_percent >= r_percent) && (b_percent >= g_percent))
+    max_color = b_percent;
+
+  double min_color = 0;
+  if((r_percent <= g_percent) && (r_percent <= b_percent))
+    min_color = r_percent;
+  if((g_percent <= r_percent) && (g_percent <= b_percent))
+    min_color = g_percent;
+  if((b_percent <= r_percent) && (b_percent <= g_percent))
+    min_color = b_percent;
+
+  double L = 0;
+  double S = 0;
+  double H = 0;
+  
+  L = (max_color + min_color)/2;
+
+  if(max_color == min_color)
+  {
+    S = 0;
+    H = 0;
+  }
+  else
+  {
+    if(L < .50)
+    {
+      S = (max_color - min_color)/(max_color + min_color);
+    }
+    else
+    {
+      S = (max_color - min_color)/(2 - max_color - min_color);
+    }
+    if(max_color == r_percent)
+    {
+      H = (g_percent - b_percent)/(max_color - min_color);
+    }
+    if(max_color == g_percent)
+    {
+      H = 2 + (b_percent - r_percent)/(max_color - min_color);
+    }
+    if(max_color == b_percent)
+    {
+      H = 4 + (r_percent - g_percent)/(max_color - min_color);
+    }
+  }
+  struct HSL hsl;
+  hsl.s = (uint)(S*100);
+  hsl.l = (uint)(L*100);
+  H = H*60;
+  if(H < 0)
+    H += 360;
+  
+  hsl.h = (uint)H;
+  
+  return hsl;
+ 
+}
+
+// This is a subfunction of HSLtoRGB
+void _hslTempConversion(unsigned int& c, const double& temp1, const double& temp2, const double& temp3)
+{
+  if((temp3 * 6) < 1)
+    c = (unsigned int)((temp2 + (temp1 - temp2)*6*temp3)*100);
+  else
+  if((temp3 * 2) < 1)
+    c = (unsigned int)(temp1*100);
+  else
+  if((temp3 * 3) < 2)
+    c = (unsigned int)((temp2 + (temp1 - temp2)*(.66666 - temp3)*6)*100);
+  else
+    c = (unsigned int)(temp2*100);
+  return;
+}
+
+struct RGB HSLtoRGB(struct HSL hsl)
+{
+  
+  uint r = 0;
+  uint g = 0;
+  uint b = 0;
+  
+  double L = ((double)hsl.l)/100;
+  double S = ((double)hsl.s)/100;
+  double H = ((double)hsl.h)/360;
+
+  if(hsl.s == 0)
+  {
+    r = hsl.l;
+    g = hsl.l;
+    b = hsl.l;
+  }
+  else
+  {
+    double temp1 = 0;
+    if(L < .50)
+    {
+      temp1 = L*(1 + S);
+    }
+    else
+    {
+      temp1 = L + S - (L*S);
+    }
+
+    double temp2 = 2*L - temp1;
+
+    double temp3 = 0;
+    for(int i = 0 ; i < 3 ; i++)
+    {
+      switch(i)
+      {
+        case 0: // red
+        {
+          temp3 = H + .33333;
+          if(temp3 > 1)
+            temp3 -= 1;
+          _hslTempConversion(r,temp1,temp2,temp3);
+          break;
+        }
+        case 1: // green
+        {
+          temp3 = H;
+          _hslTempConversion(g,temp1,temp2,temp3);
+          break;
+        }
+        case 2: // blue
+        {
+          temp3 = H - .33333;
+          if(temp3 < 0)
+            temp3 += 1;
+          _hslTempConversion(b,temp1,temp2,temp3);
+          break;
+        }
+        default:
+        {
+  
+        }
+      }
+    }
+  }
+  struct RGB rgb;
+  rgb.r = (uint)((((double)r)/100)*255);
+  rgb.g = (uint)((((double)g)/100)*255);
+  rgb.b = (uint)((((double)b)/100)*255);
+
+  return rgb;
+  
+}
+
