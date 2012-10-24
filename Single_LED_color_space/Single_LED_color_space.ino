@@ -9,7 +9,7 @@ int SDI = 3;
 long strip_colours[STRIP_LENGTH];
 
 int previousHue= 0;
-int stepSize = 1;
+int stepSize = 5;
 
 
 void setup()
@@ -21,14 +21,19 @@ void setup()
 
 }
 
+float dist(float a, float b, float c, float d)
+{
+  return sqrt((c-a)*(c-a)+(d-b)*(d-b));
+}
+
 void loop()
 {
   // get a random hue
-  int hue = random(0, 360);
+  int hue = random(0, 255);
   //int hue = 20;
-  Serial.println("Previous");
+  Serial.print("Previous: ");
   Serial.println(previousHue);
-  Serial.println("Hue");
+  Serial.print("Hue: ");
   Serial.println(hue);
   
   
@@ -44,10 +49,10 @@ void loop()
     numSteps = (hue - previousHue) / stepSize;
   }
   
-  //Serial.println("NumSteps");
-  //Serial.println(numSteps);
+  /*Serial.print("NumSteps: ");
+  Serial.println(numSteps);*/
   // set up array to contain the hue steps
-  int steps[numSteps];
+  unsigned long steps[numSteps];
   
   int hueStep;
 
@@ -59,18 +64,27 @@ void loop()
       hueStep = hueStep - 360;
 
     }
-    //Serial.println("Hue Step");
-    //Serial.println(hueStep);
-    struct HSL hsl = {hueStep, 100, 50};
-    struct RGB rgb = color.HSLtoRGB(hsl);
-    /*Serial.println("RGB");
-    Serial.println(rgb.r);
-    Serial.println(rgb.g);
-    Serial.println(rgb.b);*/
-    unsigned long rgbVal = (rgb.r << 16 | rgb.g << 8 | rgb.b) & 0xFFFFFF;
-    Serial.println("RGB");
+    long paletteShift = 12800;
+    /*Serial.print("Hue Step: ");
+    Serial.println(hueStep);*/
+    
+    float  value = hueStep;
+    ColorRGB colorRGB;
+    ColorHSV colorHSV = {(unsigned char)(value), 128, 128};
+    color.HSVtoRGB(&colorRGB, &colorHSV);
+    /*Serial.print("RGB: ");
+    Serial.print(colorRGB.r);
+    Serial.print(", ");
+    Serial.print(colorRGB.g);
+    Serial.print(", ");
+    Serial.println(colorRGB.b);*/
+    unsigned long rgbVal = (colorRGB.r << 16 | colorRGB.g << 8 | colorRGB.b) & 0xFFFFFF;
+    /*Serial.print("RGB: ");
     Serial.println(rgbVal, HEX);
+    Serial.print("Value: ");
+    Serial.println((unsigned char)((value) * 128)&0xff);*/
     steps[i] = rgbVal;
+    //delay(500);
   }
   
   //post_frame(0);
@@ -85,13 +99,14 @@ void loop()
 }
 
 
-void doFade (int colour_id, int* steps, int numSteps) {
+void doFade (int colour_id, unsigned long *steps, int numSteps) {
   
   
   for(int LED_number = 0; LED_number < numSteps; LED_number++)
   {
-    long this_led_colour = steps[colour_id]; //24 bits of color data
-    //Serial.println(this_led_colour, HEX);
+    unsigned long this_led_colour = steps[colour_id]; //24 bits of color data
+    Serial.print("this LED colour: ");
+    Serial.println(this_led_colour, HEX);
     for(byte colour_bit = 23 ; colour_bit != 255 ; colour_bit--) {
       //Feed color bit 23 first (red data MSB)
 
