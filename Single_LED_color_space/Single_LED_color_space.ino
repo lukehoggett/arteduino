@@ -31,33 +31,37 @@ void loop()
   if (currentHue > nextHue)
   {
     up = false;
-    distance = nextHue - currentHue;
+        distance = currentHue - nextHue;
   }
   else if (nextHue >= currentHue) 
   {
     up = true;
-    distance = currentHue - nextHue;    
+    distance = nextHue - currentHue;
+    
   }
   
   
   // establish the number of steps between the current and previous nextHue
   int numSteps = distance / stepSize;
-  if (currentHue > nextHue)
-  {
-    numSteps = (nextHue - currentHue + 256) / stepSize;  
-  }
-  else
-  {
-    numSteps = (nextHue - currentHue) / stepSize;
-  }
   
-  nextHue = numSteps * stepSize;
+  //nextHue = currentHue - (numSteps * stepSize);
+  /*Serial.print("Distance: ");
+  Serial.println(distance);
+  Serial.print("Num Steps: ");
+  Serial.println(numSteps);
+  Serial.print("Current Hue: ");
+  Serial.println(currentHue);
+  Serial.print("Next Hue: ");
+  Serial.println(nextHue);*/
+  
   int hue;
   if (up)
   {
     for (int i = 0; i < numSteps; i = i + stepSize)
     {
       hue = currentHue + i;
+      /*Serial.print("Up");
+      Serial.println(hue);*/
       ColorRGB colorRGB;
       ColorHSV colorHSV = {(unsigned char)(hue), 255, 255};
       color.HSVtoRGB(&colorRGB, &colorHSV);
@@ -74,7 +78,10 @@ void loop()
   {
     for (int i = 0; i < numSteps; i = i + stepSize)
     {
+      
       hue = currentHue - i;
+      /*Serial.print("Down");
+      Serial.println(hue);*/
       ColorRGB colorRGB;
       ColorHSV colorHSV = {(unsigned char)(hue), 255, 255};
       color.HSVtoRGB(&colorRGB, &colorHSV);
