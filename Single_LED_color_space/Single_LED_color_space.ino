@@ -66,7 +66,7 @@ void loop()
       ColorHSV colorHSV = {(unsigned char)(hue), 255, 255};
       color.HSVtoRGB(&colorRGB, &colorHSV);
     
-      unsigned long rgbVal = ((unsigned long)colorRGB.r << 16 | colorRGB.g << 8 | colorRGB.b) & 0xFFFFFF;
+      unsigned long rgbVal = ((unsigned long)colorRGB.r << 16 | (unsigned int)colorRGB.g << 8 | colorRGB.b) & 0xFFFFFF;
     
       Serial.println(rgbVal, HEX);
       write(rgbVal);

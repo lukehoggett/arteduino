@@ -11,7 +11,7 @@ int sensorValue = 0;
 
 void setup()
 {
-  //Serial.begin(9600);
+  Serial.begin(9600);
 
   pinMode(SDI, OUTPUT);
   pinMode(CKI, OUTPUT);
@@ -29,8 +29,8 @@ void loop()
  ColorHSV colorHSV = {mappedValue, 255, 255};
  color.HSVtoRGB(&colorRGB, &colorHSV);
 
- unsigned long rgbVal = ((unsigned long)colorRGB.r << 16 | colorRGB.g << 8 | colorRGB.b) & 0xFFFFFF;
-
+ unsigned long rgbVal = ((unsigned long)colorRGB.r << 16 | (unsigned int)colorRGB.g << 8 | colorRGB.b) & 0xFFFFFF;
+Serial.println(rgbVal);
  write(rgbVal);
  delay(100);
 
