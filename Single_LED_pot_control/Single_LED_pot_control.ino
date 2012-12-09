@@ -32,7 +32,7 @@ void loop()
  unsigned long rgbVal = ((unsigned long)colorRGB.r << 16 | (unsigned int)colorRGB.g << 8 | colorRGB.b) & 0xFFFFFF;
 Serial.println(rgbVal);
  write(rgbVal);
- delay(100);
+ delay(0);
 
 }
 
