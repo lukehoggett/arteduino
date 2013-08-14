@@ -105,11 +105,13 @@ plasma_morph()
   float value;
   ColorRGB colorRGB;
   ColorHSV colorHSV;
-
+  int halfHeight = ColorduinoScreenHeight / 2;
+  int halfWidth = ColorduinoScreenWidth / 2;
   for(y = 0; y < ColorduinoScreenHeight; y++)
-    for(x = 0; x < ColorduinoScreenWidth; x++) {
-      {
-	value = sin(dist(x + paletteShift, y, 128.0, 128.0) / 8.0)
+  {
+    for(x = 0; x < ColorduinoScreenWidth; x++) 
+    {
+	/*value = sin(dist(x + paletteShift, y, 128.0, 128.0) / 8.0)
 	  + sin(dist(x, y, 64.0, 64.0) / 8.0)
 	  + sin(dist(x, y + paletteShift / 7, 192.0, 64) / 7.0)
 	  + sin(dist(x, y, 192.0, 100.0) / 8.0);
@@ -118,8 +120,113 @@ plasma_morph()
 	colorHSV.v=255;
 	HSVtoRGB(&colorRGB, &colorHSV);
 	
-	Colorduino.SetPixel(x, y, colorRGB.r, colorRGB.g, colorRGB.b);
-      }
+	Colorduino.SetPixel(x, y, colorRGB.r, colorRGB.g, colorRGB.b);*/
+        
+        // Colorduino.SetPixel(x, y, 8 * (x + 1), 8 * ((y + 1) + (x + 1)), 4 * (y + 1) b);
+        
+        //randomSeed(analogRead(0) * analogRead(1));
+        // complete random
+        //Colorduino.SetPixel(x, y, random(0, 255), random(0, 255), random(0, 255));
+        
+        // weighted
+        // Colorduino.SetPixel(x, y, random(0, 8) * 7, random(0, 4) * 15, random(0, 2) * 32);
+        
+        // Colorduino.SetPixel(x, y, random(0, 2) * 32, random(0, 8) * 7, random(0, 4) * 15);
+        
+        // Colorduino.SetPixel(x, y, random(0, 4) * 15, random(0, 2) * 32, random(0, 8) * 7);
+        
+        // double random
+        // Colorduino.SetPixel(x, y, random(0, 8) * random(0, 8), random(0, 8) * random(0, 8), random(0, 8) * random(0, 8));
+        
+        // quad random 0 indexed
+        // Colorduino.SetPixel(x, y, random(0, 4) * random(0, 4) * random(0, 4) * random(0, 4), random(0, 4) * random(0, 4) * random(0, 4) * random(0, 4), random(0, 4) * random(0, 4) * random(0, 4) * random(0, 4));
+        //Colorduino.SetPixel(x, y, random(1,4) * random(1, 4) * random(1, 4) * random(1, 4), random(1, 4) * random(1, 4) * random(1, 4) * random(1, 4), random(1, 4) * random(1, 4) * random(1, 4) * random(1, 4));
+        
+        // blue bias
+        //Colorduino.SetPixel(x, y, random(1,4) * random(1, 4) * random(1, 4) * random(1, 4), 128, 128);
+        //Colorduino.SetPixel(x, y, 128, random(1,4) * random(1, 4) * random(1, 4) * random(1, 4), 128);
+        //Colorduino.SetPixel(x, y, 128, 128, random(1,4) * random(1, 4) * random(1, 4) * random(1, 4));
+        
+        //Colorduino.SetPixel(x, y, random(0, 255), random(0, 255), random(1,4) * random(1, 4) * random(1, 4) * random(1, 4));
+        
+        Colorduino.SetPixel(x, y, random(1,4) * random(1, 4) * random(1, 4) * random(1, 4), random(0, 255), random(0, 255));
+        
+        //Colorduino.SetPixel(x, y, random(0, 255), random(1,4) * random(1, 4) * random(1, 4) * random(1, 4), random(0, 255));
+        
+        /*Serial.println("x = ");
+        Serial.println(x);
+        Serial.println("y = ");
+        Serial.println(y);
+        if (x < halfWidth)
+        {
+          if (y < halfHeight)
+          {
+            Colorduino.SetPixel(x, y, 255, 255, 0);
+          }
+          else if (y >= halfHeight)
+          {
+            Colorduino.SetPixel(x, y, 0, 255, 255);
+            
+          }
+          
+          // Colorduino.SetPixel(x, y, random(0, 255), random(0, 255), random(1,4) * random(1, 4) * random(1, 4) * random(1, 4));
+        }
+        else if (x >= halfWidth)
+        {
+          if (y < halfHeight)
+          {
+            Colorduino.SetPixel(x, y, 255, 0, 255);
+          }
+          else if (y >= halfHeight)
+          {
+            Colorduino.SetPixel(x, y, 255, 255, 255);
+            
+          }
+        }
+        
+        if (y < halfWidth)
+        {
+          if (x < halfHeight)
+          {
+            Colorduino.SetPixel(x, y, 0, 255, 255);
+            
+          }
+          else if (x >= halfHeight)
+          {
+            Colorduino.SetPixel(x, y, 255, 255, 0);
+            
+          }
+          
+          // Colorduino.SetPixel(x, y, random(0, 255), random(0, 255), random(1,4) * random(1, 4) * random(1, 4) * random(1, 4));
+        }
+        else if (y >= halfWidth)
+        {
+          if (x < halfHeight)
+          {
+            Colorduino.SetPixel(x, y, 255, 255, 255);
+
+          }
+          else if (x >= halfHeight)
+          {
+             Colorduino.SetPixel(x, y, 255, 0, 255);            
+            
+          }
+        }*/
+          
+          // Colorduino.SetPixel(x, y, random(0, 255), random(1,4) * random(1, 4) * random(1, 4) * random(1, 4), random(0, 255));
+        
+        
+         
+          // Colorduino.SetPixel(x, y, random(1,4) * random(1, 4) * random(1, 4) * random(1, 4), random(0, 255), random(0, 255));
+        
+         // Colorduino.SetPixel(x, y, random(0, 255), random(0, 255), random(0, 255));
+       
+        
+        
+       
+         
+        
+    }
   }
   paletteShift++;
 
@@ -150,6 +257,8 @@ void ColorFill(unsigned char R,unsigned char G,unsigned char B)
 
 void setup()
 {
+  
+  //Serial.begin(9600);
   Colorduino.Init(); // initialize the board
   
   // compensate for relative intensity differences in R/G/B brightness
@@ -157,7 +266,7 @@ void setup()
   // whiteBalVal[0]=red
   // whiteBalVal[1]=green
   // whiteBalVal[2]=blue
-  unsigned char whiteBalVal[3] = {36,63,63}; // for LEDSEE 6x6cm round matrix
+  unsigned char whiteBalVal[3] = {21,63,63}; // for LEDSEE 6x6cm round matrix
   Colorduino.SetWhiteBal(whiteBalVal);
   
   
